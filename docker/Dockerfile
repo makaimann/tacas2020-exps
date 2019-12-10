@@ -11,9 +11,10 @@ RUN python3 -m pip install cython jupyterlab numpy pandas
 RUN git clone https://github.com/pysmt/pysmt
 RUN cd pysmt && git checkout -f 09dc303185812149550110123ad266326beb1179 && python3 -m pip install -e .
 
-RUN git clone -b smtcomp19 https://github.com/Boolector/boolector
-# branch was force pushed and lost that commit hash -- using a different one from paper
-RUN cd boolector && git checkout -f 98aeefd27d0ce1188707dda013c1c63a00be7b4c && ./contrib/setup-btor2tools.sh && ./contrib/setup-cadical.sh && ./configure.sh --python --py3 && cd build && make -j2 && make install
+# smtcomp19 branch no longer exists
+RUN git clone https://github.com/Boolector/boolector
+# using latest master for now
+RUN cd boolector && ./contrib/setup-btor2tools.sh && ./contrib/setup-cadical.sh && ./configure.sh --python --py3 && cd build && make -j2 && make install
 ENV PYTHONPATH="/home/tacas2020/boolector/build/lib/:${PYTHONPATH}"
 
 RUN git clone https://github.com/cristian-mattarei/CoSA
