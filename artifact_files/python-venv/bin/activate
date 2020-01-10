@@ -16,6 +16,14 @@ deactivate () {
         unset _OLD_VIRTUAL_PYTHONHOME
     fi
 
+    ## Custom for TACAS artifact
+    export PYTHONPATH=$_OLD_PYTHONPATH
+    export LD_LIBRARY_PATH=$_OLD_LD_LIBRARY_PATH
+
+    unset _OLD_PYTHONPATH
+    unset _OLD_LD_LIBRARY_PATH
+    ## End Custom for TACAS artifact
+
     # This should detect bash and zsh, which have a hash command that must
     # be called to get it to forget past commands.  Without forgetting
     # past commands the $PATH changes we made may not be respected
@@ -76,3 +84,12 @@ fi
 if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
     hash -r
 fi
+
+
+
+### ADDED FOR TACAS ARTIFACT
+export _OLD_PYTHONPATH=$PYTHONPATH
+export _OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+
+export PYTHONPATH=$PYTHONPATH:${VIRTUAL_ENV}/../cpp-libs/boolector/build/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${VIRTUAL_ENV}/../cpp-libs/boolector/build/lib
