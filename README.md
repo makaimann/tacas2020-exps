@@ -31,6 +31,12 @@ time ./run.py shift_register --width 16 --depth 16
 time ./run.py shift_register --width 16 --depth 16 --por
 ```
 
+# Artifact
+
+The artifact_files directory includes a python virtual environment and copies of
+all the necessary libraries for running the examples in the TACAS provided
+virtual machine without any internet access.
+
 # Logs
 The log files from our experimental runs are provided in `opensource-results.tar.gz`.
 
