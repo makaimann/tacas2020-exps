@@ -1,0 +1,54 @@
+dist: xenial
+language: python
+python:
+  - "3.6"
+
+sudo: required
+
+cache:
+  directories:
+  - ${TRAVIS_BUILD_DIR}/pycoreir
+  - ${TRAVIS_BUILD_DIR}/pysmt
+  - ${TRAVIS_BUILD_DIR}/coreir
+  - /home/travis/.smt_solvers/python-bindings-3.6
+
+addons:
+  apt:
+    update: true
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+     - g++-7
+     - clang
+     - wget
+     - unzip
+     - build-essential
+     - python3
+     - automake
+     - libgmp-dev
+     - curl
+     - nano
+     - python3-dev
+     - libboost-dev
+     - default-jdk
+     - libclang-dev
+     - llvm
+     - llvm-dev
+     - lbzip2
+     - libncurses5-dev
+     - python3-nose
+     - iverilog
+     - libreadline-dev
+     - libmpfr-dev
+     - libmpc-dev
+
+install:
+  - bash ./scripts/travis_install.sh
+  - pip install -e .
+  - pysmt-install --msat --confirm-agreement --install-path solvers --bindings-path bindings
+  - chmod +x ./yosys
+
+env:
+ - PATH="$PATH:." PYTHONPATH="${TRAVIS_BUILD_DIR}/pycoreir":"${TRAVIS_BUILD_DIR}/solvers/":"${TRAVIS_BUILD_DIR}/bindings:${PYTHONPATH}" LD_LIBRARY_PATH="${TRAVIS_BUILD_DIR}/coreir/lib":"${TRAVIS_BUILD_DIR}/bindings:${TRAVIS_BUILD_DIR}/solvers:${LD_LIBRARY_PATH}" COREIRCONFIG=g++-7 CC=gcc-7 CXX=g++-7
+
+script: nosetests tests -vv

@@ -1,0 +1,35 @@
+INPUT
+ input: BV(8);
+
+OUTPUT
+ output: BV(8);
+
+VAR
+ fifo_1: FIFO(input, output, clk);
+
+STATE
+ clk: BV(1);
+
+INIT
+clk = 0_1;
+
+TRANS
+(clk = 0_1) <-> (next(clk) = 1_1);
+
+
+DEF FIFO(in: BV(8), out: BV(8), clk: BV(1)):
+  STATE
+  cell_0: BV(8);
+  cell_1: BV(8);
+  cell_2: BV(8);
+  cell_3: BV(8);
+  cell_4: BV(8);
+  cell_5: BV(8);
+
+  INVAR
+  out = cell_5;
+
+  TRANS
+  posedge(clk) -> (next(cell_0) = in) & (next(cell_1) = cell_0) & (next(cell_2) = cell_1)  & (next(cell_3) = cell_2) & (next(cell_4) = cell_3) & (next(cell_5) = cell_4);
+  !(posedge(clk)) -> nochange(cell_0) & nochange(cell_1) & nochange(cell_2) & nochange(cell_3) & nochange(cell_4) & nochange(cell_5);
+  

@@ -1,0 +1,59 @@
+[GENERAL]
+model_files: model.json
+add_clock: True
+cache_files: True
+
+[DEFAULT]
+bmc_length: 40
+verification: safety
+prove: safety
+
+[PBM1]
+description: "PBM1"
+properties: ((self.clk = 0_1) & next(self.clk = 1_1)) & (!((self.arst = 0_1) & next(self.arst = 1_1))) -> (reg0.in = next(reg0.out))
+expected: True
+
+[PBM2]
+description: "PBM2"
+properties: ((self.clk = 0_1) & next(self.clk = 1_1)) & (!((self.arst = 1_1) & next(self.arst = 0_1))) -> (reg1.in = next(reg1.out))
+expected: True
+
+[PBM3]
+description: "PBM3"
+properties: ((self.clk = 1_1) & next(self.clk = 0_1)) & (!((self.arst = 0_1) & next(self.arst = 1_1))) -> (reg2.in = next(reg2.out))
+expected: True
+
+[PBM4]
+description: "PBM4"
+properties: ((self.clk = 1_1) & next(self.clk = 0_1)) & (!((self.arst = 1_1) & next(self.arst = 0_1))) -> (reg0.in = next(reg3.out))
+expected: True
+
+[PBM5]
+description: "PBM5"
+properties: ((self.clk = 0_1) & next(self.clk = 1_1)) -> (reg4.in = next(reg4.out))
+expected: True
+
+[PBM6]
+description: "PBM6"
+properties: ((self.arst = 0_1) & next(self.arst = 1_1)) -> (0_16 = next(reg0.out))
+expected: False
+
+[PBM7]
+description: "PBM7"
+properties: ((self.arst = 1_1) & next(self.arst = 0_1)) -> (0_16 = next(reg1.out))
+expected: False
+
+[PBM8]
+description: "PBM8"
+properties: ((self.arst = 0_1) & next(self.arst = 1_1)) -> (0_16 = next(reg2.out))
+expected: False
+
+[PBM9]
+description: "PBM9"
+properties: ((self.arst = 1_1) & next(self.arst = 0_1)) -> (0_16 = next(reg3.out))
+expected: False
+
+[PBM10]
+description: "PBM10"
+properties: ((self.clk = 1_1) & next(self.clk = 0_1)) -> (reg4.out = next(reg4.out))
+expected: True

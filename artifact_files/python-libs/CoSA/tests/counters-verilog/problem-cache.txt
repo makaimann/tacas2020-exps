@@ -1,0 +1,53 @@
+[GENERAL]
+model_files: Counters.v[Counters],toggle-clk1.ssts
+assume_if_true: True
+# note: This implicitly starts clk2 at zero
+#       which is why we need to use toggle-clk1.ssts to start it at 1
+clock_behaviors: DetClock(clk2, 1)
+cache_files: True
+
+[DEFAULT]
+bmc_length: 40
+coi: True
+
+[deadlocks]
+description: "No deadlocks"
+verification: simulation
+expected: True
+
+[counter_out]
+description: "Check that the out is always < 12"
+properties: out < 12_8
+prove: True
+verification: safety
+strategy: ALL
+expected: True
+
+[counter_2_reaches_1]
+description: "Check that counter 2 eventually reaches 1"
+properties: F(counter_2.out = 1_8)
+prove: True
+verification: ltl
+expected: True
+
+[counter_2_io_reaches_1]
+description: "Check that counter 2 reaches 1 infinitely often"
+properties: G(F(counter_2.out = 1_8))
+prove: True
+verification: ltl
+expected: True
+
+[counter_1_reaches_1]
+description: "Check that counter 1 eventually reaches 1"
+properties: F(counter_1.out = 1_8)
+prove: True
+verification: ltl
+expected: True
+
+[counter_1_io_reaches_1]
+description: "Check that counter 1 reaches 1 infinitely often"
+properties: G(F(counter_1.out = 1_8))
+prove: True
+verification: ltl
+expected: True
+

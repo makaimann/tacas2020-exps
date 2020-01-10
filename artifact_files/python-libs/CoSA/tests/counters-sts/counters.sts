@@ -1,0 +1,61 @@
+# Variables definition
+INPUT
+clk1: BV(1);
+clk2: BV(1);
+rst: BV(1);
+
+VAR
+init1: BV(8);
+init2: BV(8);
+# Modules instantiation
+counter_1: Counter(clk1, rst, init1);
+counter_2: Counter(clk2, rst, init2);
+adder: Adder(counter_1.out, counter_2.out);
+
+OUTPUT
+out: BV(8);
+
+# Initial state constraints
+INIT
+clk1 = 0_1;
+clk2 = 1_1;
+
+# Transition relation
+TRANS
+# Clock Behavior
+(clk1 = 0_1) <-> (next(clk1) = 1_1);
+(clk2 = 0_1) <-> (next(clk2) = 1_1);
+
+# We reset only when out > 10
+((out > 10_8) -> ((rst = 0_1) & (next(rst) = 1_1)));
+((out <= 10_8) -> (rst = 0_1));
+
+# Constraints on the system
+INVAR
+out = adder.out;
+init1 = 0_8;
+init2 = 2_8;
+
+# Module Adder definition
+DEF Adder(in1: BV(8), in2: BV(8)):
+  VAR
+  out: BV(8);
+
+  INVAR
+  out = (in1 + in2);
+  
+# Module Counter definition
+DEF Counter(clk: BV(1), rst: BV(1), initval: BV(8)):
+  VAR
+  out: BV(8);
+
+  INIT
+  out = 0_8;
+
+  TRANS
+  # When posedge and not reset we increase the out by 1
+  (((clk = 0_1) & (next(clk) = 1_1)) & !((next(rst) = 1_1) & (rst = 0_1))) -> (next(out) = (out + 1_8));
+  # When negedge and not reset we keep the value of the out
+  (((clk = 1_1) & (next(clk) = 0_1)) & !((next(rst) = 1_1) & (rst = 0_1))) -> (next(out) = (out));
+  # When reset we set out to initval
+  ((rst = 0_1) & (next(rst) = 1_1)) -> (next(out) = initval);

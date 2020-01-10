@@ -1,0 +1,30 @@
+[GENERAL]
+model_files: counter.json,counter_live.sts
+add_clock: True
+
+[DEFAULT]
+bmc_length: 40
+
+[Globally]
+description: "Globally Check"
+properties: self.out < 4_16
+assumptions: en_clr = 0_1 -> self.clr = 0_1
+verification: safety
+prove: True
+expected: False
+
+[Finally]
+description: "Finally Check"
+properties: F(self.out = 4_16)
+assumptions: en_clr = 0_1 -> self.clr = 0_1
+verification: ltl
+prove: True
+expected: True
+
+[Liveness]
+description: "Liveness Check"
+properties: F(G(self.out = 4_16))
+assumptions: en_clr = 0_1 -> self.clr = 0_1
+verification: ltl
+prove: True
+expected: False

@@ -1,0 +1,35 @@
+[GENERAL]
+model_files: counters.json
+abstract_clock: True
+add_clock: True
+
+[DEFAULT]
+bmc_length: 40
+
+[Counter0-LT18]
+description: "Counter 0 is always less than 18"
+properties: count0.r.reg0.out < 18_16
+verification: safety
+prove: True
+expected: False
+
+[Counters-EQ]
+description: "Two counters are always equal"
+properties: count0.r.reg0.out = count1.r.reg0.out
+verification: safety
+prove: True
+expected: False
+
+[Counters-SIM]
+description: "Simulation with no unrolling"
+properties: count0.r.reg0.out = 5_16
+verification: simulation
+strategy: NU
+expected: True
+
+[Counter1-LT19]
+description: "Counter 1 is always less than 18"
+properties: count1.r.reg0.out < 19_16
+verification: safety
+prove: True
+expected: True

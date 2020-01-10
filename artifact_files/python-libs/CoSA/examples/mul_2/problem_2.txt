@@ -1,0 +1,14 @@
+[GENERAL]
+model_files: mul_2_pe.json
+abstract_clock: True
+add_clock: True
+
+[DEFAULT]
+bmc_length: 5
+
+[Equivalence Checking]
+description: "Mul2 PE is equivalent to Mul2 PE Passes"
+verification: equivalence
+equal_to: mul_2_pe-passes.json
+prove: True
+expected: Unknown

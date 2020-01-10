@@ -1,0 +1,22 @@
+[GENERAL]
+model_files: fifo.sts
+
+[DEFAULT]
+bmc_length: 40
+
+[scoreboard_end]
+description: "Scoreboard does not reach the end value"
+properties: !sb.end
+generators: sb=FixedScoreboard(input, 6, posedge(clk))
+verification: safety
+prove: True
+
+[fifocorrectness]
+description: "FIFO correctness with scoreboard"
+properties: sb.end -> (sb.packet = output)
+generators: sb=FixedScoreboard(input, 6, posedge(clk))
+verification: safety
+strategy: INT
+incremental: False
+prove: True
+expected: True
