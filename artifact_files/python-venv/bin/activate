@@ -51,7 +51,7 @@ VIRTUAL_ENV=$(realpath "${DIR}/../")
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
-PATH="$VIRTUAL_ENV/bin:$PATH"
+PATH="$VIRTUAL_ENV/bin:$VIRTUAL_ENV/../cpp-libs/yosys:$PATH"
 export PATH
 
 # unset PYTHONHOME if set
