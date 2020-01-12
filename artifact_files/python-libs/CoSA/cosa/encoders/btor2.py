@@ -17,7 +17,7 @@ from pysmt.fnode import FNode
 from pysmt.shortcuts import Not, TRUE, And, BVNot, BVNeg, BVAnd, BVOr, BVAdd, Or, Symbol, BV, EqualsOrIff, \
     Implies, BVMul, BVExtract, BVUGT, BVUGE, BVULT, BVULE, BVSGT, BVSGE, BVSLT, BVSLE, \
     Ite, BVZExt, BVSExt, BVXor, BVConcat, get_type, BVSub, Xor, Select, Store, BVComp, simplify, \
-    BVLShl, BVAShr, BVLShr, Array
+    BVLShl, BVAShr, BVLShr
 from pysmt.typing import BOOL, BVType, ArrayType
 
 from cosa.representation import HTS, TS
@@ -82,6 +82,7 @@ INIT="init"
 NEXT="next"
 CONSTRAINT="constraint"
 BAD="bad"
+ASSERTINFO="btor-assert"
 
 special_char_replacements = {"$": "", "\\": ".", ":": COLON_REP}
 
@@ -102,7 +103,7 @@ class BTOR2Parser(ModelParser):
                    config:NamedTuple,
                    flags:str=None)->Tuple[HTS, List[FNode], List[FNode]]:
         self.symbolic_init = config.symbolic_init
-        with filepath.open("r", errors='surrogateescape') as f:
+        with filepath.open("r") as f:
             return self.parse_string(f.read())
 
     def is_available(self):
@@ -241,7 +242,7 @@ class BTOR2Parser(ModelParser):
             if ntype == OUTPUT:
                 # unfortunately we need to create an extra symbol just to have the output name
                 # we could be smarter about this, but then this parser can't be greedy
-                original_symbol = B2BV(getnode(nids[0]))
+                original_symbol = getnode(nids[0])
                 output_symbol = Symbol(nids[1], original_symbol.get_type())
                 nodemap[nid] = EqualsOrIff(output_symbol, original_symbol)
                 invarlist.append(nodemap[nid])
@@ -358,9 +359,6 @@ class BTOR2Parser(ModelParser):
             if ntype == INIT:
                 if (get_type(getnode(nids[1])) == BOOL) or (get_type(getnode(nids[2])) == BOOL):
                     nodemap[nid] = EqualsOrIff(BV2B(getnode(nids[1])), BV2B(getnode(nids[2])))
-                elif get_type(getnode(nids[1])).is_array_type():
-                    _type = get_type(getnode(nids[1]))
-                    nodemap[nid] = EqualsOrIff(getnode(nids[1]), Array(_type.index_type, default=getnode(nids[2])))
                 else:
                     nodemap[nid] = EqualsOrIff(getnode(nids[1]), getnode(nids[2]))
                 initlist.append(getnode(nid))
@@ -372,9 +370,10 @@ class BTOR2Parser(ModelParser):
             if ntype == BAD:
                 nodemap[nid] = getnode(nids[0])
 
-                if len(nids) > 1:
-                    assert_name = nids[1]
-                    description = "Embedded assertion: {}".format(assert_name)
+                if ASSERTINFO in line:
+                    filename_lineno = os.path.basename(nids[3])
+                    assert_name = 'embedded_assertion_%s'%filename_lineno
+                    description = "Embedded assertion at line {1} in {0}".format(*filename_lineno.split(COLON_REP))
                 else:
                     assert_name = 'embedded_assertion_%i'%prop_count
                     description = 'Embedded assertion number %i'%prop_count

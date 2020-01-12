@@ -63,7 +63,7 @@ class BoolectorOptions(SolverOptions):
                                  pyboolector.BTOR_OPT_REWRITE_LEVEL,
                                  pyboolector.BTOR_OPT_SKELETON_PREPROC,
                                  pyboolector.BTOR_OPT_ACKERMANN,
-                                 pyboolector.BTOR_OPT_BETA_REDUCE_ALL,
+                                 # pyboolector.BTOR_OPT_BETA_REDUCE_ALL,
                                  pyboolector.BTOR_OPT_ELIMINATE_SLICES,
                                  pyboolector.BTOR_OPT_VAR_SUBST,
                                  pyboolector.BTOR_OPT_UCOPT,
