@@ -482,7 +482,6 @@ class ProblemSolver(object):
             if problem.name is not None:
                 Logger.log("\n*** Analyzing problem \"%s\" ***"%(problem.name), 1)
                 Logger.msg("Solving \"%s\" "%problem.name, 0, not(Logger.level(1)))
-
             # apply parametric behaviors (such as toggling the clock)
             # Note: This is supposed to be *before* creating the combined system for equivalence checking
             #       we want this assumption to be applied to both copies of the clock
@@ -565,6 +564,7 @@ class ProblemSolver(object):
                                                               lemmas,
                                                               assumptions,
                                                               problem)
+
 
                 # set status for this problem
                 problems_config.set_problem_status(problem, status)
